@@ -1,3 +1,4 @@
+import pandas as pd
 import json
 
 json_data = [
@@ -73,25 +74,24 @@ json_data = [
  }
 ]
 
-for data in json_data:
-    if data["Gaji"] >= 8000000 and data["Gaji"] < 10000000:
-        data["Jabatan"] = "Officer"
-    elif data["Gaji"] >= 10000000 and data["Gaji"] < 12000000:
-        data["Jabatan"] = "Supervisor"
-    elif data["Gaji"] >= 12000000 and data["Gaji"] < 15000000:
-        data["Jabatan"] = "Asisten Manajer"
-    elif data["Gaji"] >= 15000000:
-        data["Jabatan"] = "Manager"
-    else:
-        data["Jabatan"] = None
+df = pd.DataFrame(json_data)
 
-gaji = []
-for data in json_data:
-    gaji.append(data["Gaji"])
-sorted_gaji = sorted(gaji, reverse=True)
-print("Array list gaji dari terbesar hingga terkecil:", sorted_gaji)
-print("Gaji terbesar:", sorted_gaji[0])
-print("Gaji terkecil:", sorted_gaji[-1])
+def assign_jabatan(row):
+  if row >= 8000000 and row < 10000000:
+      jabatan = "Officer"
+  elif row >= 10000000 and row < 12000000:
+      jabatan = "Supervisor"
+  elif row >= 12000000 and row < 15000000:
+      jabatan = "Asisten Manajer"
+  elif row >= 15000000:
+      jabatan = "Manager"
+  else:
+      jabatan = None
+  return jabatan
 
-json_formatted = json.dumps(json_data, indent=2)
-print(json_formatted)
+df['Jabatan'] = df['Gaji'].apply(assign_jabatan)
+print(df)
+
+print(df['Gaji'].sort_values(ascending=False))
+print("Gaji terbesar:", df['Gaji'].max())
+print("Gaji terkecil:", df['Gaji'].min())
